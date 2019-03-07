@@ -28,7 +28,12 @@
       OpenSeadragon({
         id: 'map',
         prefixUrl: 'zoomable-test/',
-        tileSources: 'ratzer.dzi'
+        tileSources: 'ratzer.dzi',
+        maxZoomPixelRatio: Infinity,
+        showNavigationControl: false,
+        showZoomControl: false,
+        showHomeControl: false,
+        showFullPageControl: false,
       });
     </script>
   </body>
