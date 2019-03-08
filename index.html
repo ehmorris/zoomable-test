@@ -4,6 +4,7 @@
     <title>Map</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <link rel="preload" href="openseadragon.min.js" as="script"/>
     <script type="text/javascript" src="openseadragon.min.js"></script>
     <style>
       body {
@@ -84,20 +85,23 @@
 
         const instance = OpenSeadragon(Object.assign(generic_map_options, unique_map_options));
 
-        instance.addHandler('zoom', ({zoom: current_zoom}) => {
+        const snap_to_home = () => {
           const home_zoom = instance.viewport.getHomeZoom();
+          const current_zoom = instance.viewport.getZoom();
           const {x: home_x, y: home_y} = instance.viewport.getHomeBounds();
           const {x: current_x, y: current_y} = instance.viewport.getBounds();
 
           if (
             current_zoom < 1 &&
-            home_x !== current_x &&
-            home_y !== current_y &&
-            home_zoom !== current_zoom
+            current_zoom !== home_zoom &&
+            current_x !== home_x &&
+            current_y !== home_y
           ) {
             instance.viewport.goHome();
           }
-        });
+        }
+
+        instance.addHandler('zoom', snap_to_home);
       });
     </script>
   </body>
