@@ -23,6 +23,7 @@
         position: relative;
         width: 100%;
         background: #222;
+        transition: transform .5s ease;
       }
 
       .map_container_overlay {
@@ -67,26 +68,62 @@
         <div class="map_container_child" id="map_ratzer"></div>
       </div>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus suscipit mi quis ante tincidunt mattis. Vestibulum volutpat suscipit nisi, vel pretium purus gravida at. Vivamus tincidunt libero nec purus pellentesque sollicitudin. In malesuada sagittis pharetra. Ut consectetur, nunc mattis imperdiet pretium, quam dui dictum tellus, at dignissim velit odio a leo. Quisque in eros facilisis, pretium enim vitae, interdum nisi. Nam orci nulla, posuere at nibh id, dictum suscipit odio. Mauris consectetur libero et auctor congue.</p>
-      <div class="map_container map_container_thirdstreet">
-        <img src="./thirdstreet.jpg" onclick="">
+      <div id="map_preview_clickable_target" class="map_container map_container_thirdstreet">
+        <img src="./thirdstreet_preview.jpg" />
       </div>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus suscipit mi quis ante tincidunt mattis. Vestibulum volutpat suscipit nisi, vel pretium purus gravida at. Vivamus tincidunt libero nec purus pellentesque sollicitudin. In malesuada sagittis pharetra. Ut consectetur, nunc mattis imperdiet pretium, quam dui dictum tellus, at dignissim velit odio a leo. Quisque in eros facilisis, pretium enim vitae, interdum nisi. Nam orci nulla, posuere at nibh id, dictum suscipit odio. Mauris consectetur libero et auctor congue.</p>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus suscipit mi quis ante tincidunt mattis. Vestibulum volutpat suscipit nisi, vel pretium purus gravida at. Vivamus tincidunt libero nec purus pellentesque sollicitudin. In malesuada sagittis pharetra. Ut consectetur, nunc mattis imperdiet pretium, quam dui dictum tellus, at dignissim velit odio a leo. Quisque in eros facilisis, pretium enim vitae, interdum nisi. Nam orci nulla, posuere at nibh id, dictum suscipit odio. Mauris consectetur libero et auctor congue.</p>
     </div>
 
+    <!--
     <div class="map_container_overlay map_container_thirdstreet">
       <div class="map_container_child" id="map_thirdstreet"></div>
     </div>
+    -->
+
+    <script type="text/javascript">
+      const get_window_dimensions = () => ({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+
+      const get_asset_rect = (asset) => asset.getBoundingClientRect();
+
+      const get_asset_transform = (asset) => {
+        const asset_rect = get_asset_rect(asset);
+        const window_dimensions = get_window_dimensions();
+
+        const v_offset = (window_dimensions.height - asset_rect.height) / 2 - asset_rect.top;
+        const h_offset = (window_dimensions.width - asset_rect.width) / 2 - asset_rect.left;
+
+        const scale_to_full_width = window_dimensions.width / asset_rect.width;
+        const scale_to_full_height = window_dimensions.height / asset_rect.height;
+        const scale = Math.min(scale_to_full_height, scale_to_full_width);
+
+        const asset_transform = `translate3d(${h_offset}px, ${v_offset}px, 0) scale(${scale})`;
+
+        return scale > 1.1 && asset_transform;
+      };
+
+      const target = document.querySelector('#map_preview_clickable_target');
+      target.addEventListener('click', () => {
+        if (target.style.transform) {
+          target.style.transform = '';
+        } else {
+          target.style.transform = get_asset_transform(target);
+        }
+      });
+    </script>
 
     <script type="text/javascript">
       const maps = [
         {
           id: 'map_ratzer',
           dzi: 'ratzer',
-        }, {
+        }/*, {
           id: 'map_thirdstreet',
           dzi: 'thirdstreet',
-        }
+        }*/
       ]
 
       const generic_map_options = {
